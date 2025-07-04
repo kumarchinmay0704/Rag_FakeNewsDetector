@@ -260,29 +260,4 @@ python -m pytest
 python app.py
 ```
 
-## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **NewsAPI**: For providing real-time news data
-- **GNews**: For additional news source integration
-- **Sentence Transformers**: For advanced NLP capabilities
-- **FAISS**: For efficient similarity search
-- **Bootstrap**: For responsive UI components
-
-## 📞 Support
-
-If you have any questions or need support:
-
-- **Issues**: [GitHub Issues](https://github.com/yourusername/rag-fake-news-detector/issues)
-- **Email**: your-email@example.com
-- **Documentation**: [Wiki](https://github.com/yourusername/rag-fake-news-detector/wiki)
-
----
-
-<div align="center">
-  <p>Made with ❤️ by [Your Name]</p>
-  <p>⭐ Star this repository if you found it helpful!</p>
-</div> 

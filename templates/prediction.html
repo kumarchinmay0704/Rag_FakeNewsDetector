@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <title>Fake News Detection - Prediction</title>
+  </head>
+  <body>
+    <button class="theme-toggle" id="themeToggle">
+      <i class="fas fa-moon"></i>
+    </button>
+    <header>
+      <div class="container py-3 d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+          <span class="me-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-danger rounded-circle" viewBox="0 0 24 24" width="40" height="40">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            </svg>
+          </span>
+          <span class="fs-3 fw-bold text-white">Fake News Detection</span>
+        </div>
+        <nav>
+          <a href="/" class="text-white me-4">Home</a>
+          <a href="/prediction" class="text-white">Prediction</a>
+        </nav>
+      </div>
+    </header>
+    <div class="reporter-3d-container">
+      <lottie-player src="{{ url_for('static', filename='animation2.json') }}" background="transparent" speed="1" style="width: 200px; height: 200px;" loop autoplay></lottie-player>
+    </div>
+    <div class="container my-5">
+      <div class="row justify-content-center">
+        <div class="col-md-4 mb-3">
+          <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center">
+              <i class="fas fa-newspaper fa-2x text-primary mb-3"></i>
+              <h5 class="card-title fw-bold">News Verification</h5>
+              <p class="card-text">Get instant verification of news articles using our advanced AI algorithms and extensive database of verified sources.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center">
+              <i class="fas fa-database fa-2x text-primary mb-3"></i>
+              <h5 class="card-title fw-bold">Source Database</h5>
+              <p class="card-text">Access our comprehensive database of verified news sources and historical data for accurate fact-checking.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center">
+              <i class="fas fa-chart-pie fa-2x text-primary mb-3"></i>
+              <h5 class="card-title fw-bold">Detailed Analysis</h5>
+              <p class="card-text">Receive detailed analysis including confidence scores, pattern detection, and source verification.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <section>
+      <div class="container py-5">
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <div class="card glass-card p-4 mb-4">
+              <h2 class="mb-3 text-warning">Fake News Detection</h2>
+              <p class="mb-4">Fake news is the deliberate spread of misinformation via traditional news media or via social media. False information spreads extraordinarily fast. This is demonstrated by the fact that, when one fake news site is taken down, another will promptly take its place. In addition, fake news can become indistinguishable from accurate reporting since it spreads so fast.</p>
+              <form action="/prediction" method="POST" class="mb-3">
+                <label for="news" class="form-label">Enter news headlines or paste a news URL</label>
+                <input type="text" class="form-control" id="news" name="news" aria-describedby="emailHelp" placeholder="Enter news text or paste URL (e.g., https://example.com/news)">
+                <div id="emailHelp" class="form-text text-light">We'll never share your email with anyone else.</div>
+                <button type="submit" class="btn btn-primary mt-3">Submit</button>
+              </form>
+              <div class="result">
+                {% if prediction_text %}
+                <h2>{{ prediction_text }}</h2>
+                
+                {% if analysis_type == "URL" and extracted_data %}
+                <div class="url-analysis mb-4">
+                  <div class="card">
+                    <div class="card-header bg-info text-white">
+                      <i class="fas fa-link me-2"></i>URL Analysis
+                    </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <h6>Source:</h6>
+                          <p class="text-muted">{{ extracted_data.source }}</p>
+                        </div>
+                        <div class="col-md-6">
+                          <h6>Analysis Type:</h6>
+                          <p class="text-muted">{{ analysis_type }}</p>
+                        </div>
+                      </div>
+                      {% if extracted_data.title %}
+                      <div class="mb-3">
+                        <h6>Extracted Title:</h6>
+                        <p class="text-muted">{{ extracted_data.title }}</p>
+                      </div>
+                      {% endif %}
+                      {% if extracted_data.description %}
+                      <div class="mb-3">
+                        <h6>Description:</h6>
+                        <p class="text-muted">{{ extracted_data.description[:200] }}{% if extracted_data.description|length > 200 %}...{% endif %}</p>
+                      </div>
+                      {% endif %}
+                      <div class="mb-3">
+                        <h6>URL:</h6>
+                        <a href="{{ extracted_data.url }}" target="_blank" class="text-primary">{{ extracted_data.url }}</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+                
+                <!-- Source Credibility section completely removed as per user request -->
+                
+                {% if reason %}
+                <p class="reason text-muted">{{ reason }}</p>
+                {% endif %}
+
+                {% if verification_details %}
+                <div class="verification-details mt-4">
+                  <h4>Verification Details</h4>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="card mb-3">
+                        <div class="card-header">Verification Analysis</div>
+                        <div class="card-body">
+                          <p>Verification Score: {{ ((verification_details.get('verification_score', 0) * 100)|round|int) }}%</p>
+                          <p class="text-muted">{{ verification_details.get('explanation', 'Based on comprehensive analysis of news content') }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {% if verification_details.pattern_analysis %}
+                  <div class="card mb-3">
+                    <div class="card-header">Pattern Analysis</div>
+                    <div class="card-body">
+                      <ul class="list-unstyled">
+                        {% for pattern in verification_details.pattern_analysis %}
+                        <li class="mb-2">
+                          <i class="fas fa-exclamation-triangle text-warning"></i>
+                          {{ pattern }}
+                        </li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                  {% endif %}
+                  
+                  <div class="card">
+                    <div class="card-header">Real-time Verification</div>
+                    <div class="card-body">
+                      <p class="mb-0">
+                        {% if verification_details.realtime_verification %}
+                        <i class="fas fa-check-circle text-success"></i> Verified against real-time news sources
+                        {% else %}
+                        <i class="fas fa-times-circle text-danger"></i> No real-time verification available
+                        {% endif %}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+                {% else %}
+                <div class="text-center text-muted">
+                  <i class="fas fa-newspaper fa-3x mb-3"></i>
+                  <p>Enter a news headline above to analyze its authenticity</p>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <!-- Real-time News Verification -->
+          <div class="col-md-12 mb-4">
+            <div class="card h-100">
+              <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Real-time News Verification</h4>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <!-- US News Section -->
+                  <div class="col-md-4">
+                    <div class="card mb-3">
+                      <div class="card-header bg-primary text-white">
+                        <i class="fas fa-flag-usa me-2"></i>US News
+                      </div>
+                      <div class="card-body">
+                        {% if realtime_news %}
+                          {% set us_news = realtime_news|selectattr('region', 'equalto', 'US')|list %}
+                          {% if us_news %}
+                            {% for article in us_news %}
+                              <div class="mb-3">
+                                <div class="card shadow-sm">
+                                  <div class="card-body">
+                                    <h5 class="card-title">{{ article.title }}</h5>
+                                    <p class="card-text">{{ article.description }}</p>
+                                    <small class="text-muted">Source: {{ article.source.name }} | Published: {{ article.publishedAt }}</small>
+                                  </div>
+                                </div>
+                              </div>
+                            {% endfor %}
+                          {% else %}
+                            <p>No US news found for verification.</p>
+                          {% endif %}
+                        {% else %}
+                          <p>No US news found for verification.</p>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Europe News Section -->
+                  <div class="col-md-4">
+                    <div class="card mb-3">
+                      <div class="card-header bg-info text-white">
+                        <i class="fas fa-globe-europe me-2"></i>European News
+                      </div>
+                      <div class="card-body">
+                        {% if realtime_news %}
+                          {% set eu_news = realtime_news|selectattr('region', 'equalto', 'Europe')|list %}
+                          {% if eu_news %}
+                            {% for article in eu_news %}
+                              <div class="mb-3">
+                                <div class="card shadow-sm">
+                                  <div class="card-body">
+                                    <h5 class="card-title">{{ article.title }}</h5>
+                                    <p class="card-text">{{ article.description }}</p>
+                                    <small class="text-muted">Source: {{ article.source.name }} | Published: {{ article.publishedAt }}</small>
+                                  </div>
+                                </div>
+                              </div>
+                            {% endfor %}
+                          {% else %}
+                            <p>No European news found for verification.</p>
+                          {% endif %}
+                        {% else %}
+                          <p>No European news found for verification.</p>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Asia News Section -->
+                  <div class="col-md-4">
+                    <div class="card mb-3">
+                      <div class="card-header bg-warning text-dark">
+                        <i class="fas fa-globe-asia me-2"></i>Asian News
+                      </div>
+                      <div class="card-body">
+                        {% if realtime_news %}
+                          {% set asia_news = realtime_news|selectattr('region', 'equalto', 'Asia')|list %}
+                          {% if asia_news %}
+                            {% for article in asia_news %}
+                              <div class="mb-3">
+                                <div class="card shadow-sm">
+                                  <div class="card-body">
+                                    <h5 class="card-title">{{ article.title }}</h5>
+                                    <p class="card-text">{{ article.description }}</p>
+                                    <small class="text-muted">Source: {{ article.source.name }} | Published: {{ article.publishedAt }}</small>
+                                  </div>
+                                </div>
+                              </div>
+                            {% endfor %}
+                          {% else %}
+                            <p>No Asian news found for verification.</p>
+                          {% endif %}
+                        {% else %}
+                          <p>No Asian news found for verification.</p>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Database Verification Section (Collapsible) -->
+          <div class="col-md-12 mb-4">
+            <div class="card">
+              <div class="card-header bg-secondary text-white" id="databaseHeader" style="cursor: pointer;" 
+                   data-bs-toggle="collapse" data-bs-target="#databaseContent" aria-expanded="false" aria-controls="databaseContent">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h4 class="mb-0">
+                    <i class="fas fa-database me-2"></i>Database Verification
+                    <small class="ms-2">(Click to expand)</small>
+                  </h4>
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+              </div>
+              <div id="databaseContent" class="collapse">
+                <div class="card-body">
+                  <div class="row">
+                    <!-- Similar Articles from Database -->
+                    <div class="col-md-12">
+                      <div class="card">
+                        <div class="card-header bg-primary text-white">
+                          Similar Articles from Database
+                        </div>
+                        <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                          {% if similar_articles %}
+                            {% for article in similar_articles.split('\n\n') %}
+                              <div class="mb-3">
+                                <div class="card shadow-sm">
+                                  <div class="card-body">
+                                    <p class="card-text">{{ article }}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            {% endfor %}
+                          {% else %}
+                            <p>No similar articles found.</p>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="text-center">
+          <a href="/" class="back-button">Back to Home</a>
+        </div>
+      </div>
+    </section>
+    <footer class="text-center py-4 mt-5" style="background: rgba(30,30,30,0.95); color: #fff;">
+      <div>Fake News Detection &copy; 2024 | Powered by Machine Learning</div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        const icon = themeToggle.querySelector('i');
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+          html.setAttribute('data-bs-theme', savedTheme);
+          icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        themeToggle.addEventListener('click', () => {
+          const currentTheme = html.getAttribute('data-bs-theme');
+          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+          
+          html.setAttribute('data-bs-theme', newTheme);
+          icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+          
+          localStorage.setItem('theme', newTheme);
+        });
+
+        // Existing database header code
+        const databaseHeader = document.getElementById('databaseHeader');
+        if (databaseHeader) {
+          databaseHeader.addEventListener('click', function() {
+            const icon = this.querySelector('.fa-chevron-down');
+            if (icon) {
+              icon.style.transform = this.getAttribute('aria-expanded') === 'true' ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

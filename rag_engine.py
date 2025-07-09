@@ -59,9 +59,10 @@ class RAGEngine:
         self.index = faiss.read_index(path)
         
     def search(self, query: str, k: int = 5) -> List[Tuple[str, float]]:
-        """Search for similar news articles with improved similarity scoring"""
+        """Search for similar news articles - disabled when no index available"""
         if self.index is None:
-            raise ValueError("No index available. Please create or load index first.")
+            print("FAISS index not available. Returning empty search results.")
+            return []
             
         # Encode the query
         query_vector = self.model.encode([query])

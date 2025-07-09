@@ -7,14 +7,9 @@ import re
 # Initialize Flask app
 app = Flask(__name__)
 
-# Initialize RAGEngine and load only the FAISS index
+# Initialize RAGEngine without any large files
 rag_engine = RAGEngine()
-if os.path.exists("news_index.faiss"):
-    print("Loading existing index...")
-    rag_engine.load_index("news_index.faiss")
-else:
-    print("FAISS index not found. Similarity search will be disabled.")
-    rag_engine.index = None
+print("RAG engine initialized without FAISS index. Similarity search disabled.")
 
 # Helper function to check if input is a valid URL
 
@@ -46,12 +41,8 @@ def prediction():
             analysis = rag_engine.analyze_news(news)
             analysis_type = "Text"
 
-        similar_articles_text = ""
-        if rag_engine.index is not None and 'similar_articles' in analysis:
-            similar_articles = analysis['similar_articles']
-            similar_articles_text = "\n\n".join([f"Similar article {i+1}: {text[:200]}..." for i, (text, _) in enumerate(similar_articles)])
-        else:
-            similar_articles_text = "Similarity search is disabled."
+        # No similarity search available
+        similar_articles_text = "Similarity search is disabled (FAISS index not available)."
 
         return render_template(
             "prediction.html",
